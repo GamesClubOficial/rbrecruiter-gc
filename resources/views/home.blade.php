@@ -9,7 +9,7 @@
 		<!-- todo: details component -->
 
 		@foreach($positions as $position)
-				<x-modal id="{{ $position->vacancySlug . '-details' }}" modal-label="{{ $position->vacancySlug . '-details-label' }}" modal-title="{{__('messages.details_m_title')}}" include-close-button="true">
+				<x-modal id="{{ $position->vacancySlug . '-details' }}" modal-label="{{ $position->vacancySlug . '-details-label' }}" modal-title="{{__('Vacancy details')}}" include-close-button="true">
 
 					@if (is_null($position->vacancyFullDescription))
 
@@ -42,28 +42,6 @@
 	<main class="py-5">
 
 	  <div class="container-fluid">
-
-        <div class="row mt-2 mb-4">
-
-            <div class="col">
-                <div id="twitch-embed"></div>
-
-                <script src="https://embed.twitch.tv/embed/v1.js"></script>
-
-                <script type="text/javascript">
-                new Twitch.Embed("twitch-embed", {
-                    width: '100%',
-                    height: 580,
-                    channel: "gamesclub_oficial",
-                    muted: true, // don't annoy chrome with autoplay w/audio
-                    theme: 'light',
-                    layout: 'video'
-                });
-                </script>
-            </div>
-
-        </div>
-
 
           @if ($demoActive)
               <div class="row">
@@ -112,8 +90,6 @@
           <div class="row mt-5">
 
               <div class="col text-center">
-                  <img src="/community.svg" height="250px" alt="community decorative svg">
-
                   <h3>Confira os cargos disponíveis</h3>
                   <p>Quer colaborar com a equipe da Games Club? Estamos recrutando! Confira um dos nossos cargos abertos. Uma boa equipe é um pilar de uma comunidade bem-sucedida.</p>
               </div>

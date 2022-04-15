@@ -192,6 +192,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
 
         // Further locking down the profile section by adding the middleware to everything but the required routes
         Route::group(['prefix' => '/profile'], function () {
+
             Route::get('/settings', [ProfileController::class, 'showProfile'])
                 ->name('showProfileSettings')
                 ->middleware('passwordredirect');
@@ -204,6 +205,13 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 ->name('showSingleProfile')
                 ->middleware('passwordredirect');
 
+            Route::post('user/profile', [ProfileController::class, 'createProfile'])
+                ->name('createProfile')
+                ->middleware('passwordredirect');
+
+            Route::delete('user/profile', [ProfileController::class, 'deleteProfile'])
+                ->name('deleteProfile')
+                ->middleware('passwordredirect');
 
 
             Route::get('/settings/account', [UserController::class, 'showAccount'])
@@ -351,7 +359,10 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                     ->name('devForceEvaluateVotes');
 
                 Route::delete('/suspensions/purge-expired', [DevToolsController::class, 'purgeSuspensions'])
-                    ->name('devPurgeExpired');
+                    ->name('devPurgeExpiredSuspensions');
+
+                Route::delete('/absences/purge-expired', [DevToolsController::class, 'endAbsencesNow'])
+                    ->name('devPurgeExpiredAbsences');
 
             });
 

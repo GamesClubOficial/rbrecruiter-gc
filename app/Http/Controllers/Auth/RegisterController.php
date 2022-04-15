@@ -28,6 +28,7 @@ use App\Facades\Options;
 use App\Facades\IP;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
@@ -68,6 +69,10 @@ class RegisterController extends Controller
 
         foreach ($users as $user) {
             if ($user && $user->isBanned()) {
+                Log::alert('Suspended user attempting to use registration form', [
+                    'ip' => \request()->ip(),
+                    'email' => $user->email
+                ]);
                 abort(403, 'You do not have permission to access this page.');
             }
         }
@@ -106,9 +111,11 @@ class RegisterController extends Controller
             'uuid' => (Options::getOption('requireGameLicense') && Options::getOption('currentGame') == 'MINECRAFT') ? ['required', 'string', 'unique:users', 'min:32', 'max:32'] : ['nullable', 'string'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'acceptTerms' => ['required', 'accepted'],
             'password' => $password,
         ], [
-            'uuid.required' => 'Please enter a valid (and Premium) Minecraft username! We do not support cracked users.',
+            'uuid.required' => __('Please enter a valid (and Premium) Minecraft username! We do not support cracked users.'),
+            'acceptTerms.required' => __('Please accept the Community Guidelines, Terms of Service and Privacy Policy to continue.')
         ]);
     }
 

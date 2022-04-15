@@ -21,6 +21,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ProfileAlreadyExistsException;
+use App\Exceptions\ProfileCreationFailedException;
+use App\Exceptions\ProfileNotFoundException;
 use App\Facades\IP;
 use App\Http\Requests\ProfileSave;
 use App\Services\ProfileService;
@@ -62,6 +65,15 @@ class ProfileController extends Controller
 
     public function showSingleProfile(User $user)
     {
+
+        if (is_null($user->profile)) {
+
+            return redirect()
+                ->back()
+                ->with('error', "This user doesn't have a profile.");
+
+        }
+
         $socialMediaProfiles = json_decode($user->profile->socialLinks, true);
         $createdDate = Carbon::parse($user->created_at);
 
@@ -113,5 +125,45 @@ class ProfileController extends Controller
         return redirect()
             ->back()
             ->with('success', __('Profile updated.'));
+    }
+
+
+    public function createProfile(Request $request)
+    {
+
+        try {
+            $this->profileService->createProfile($request->user());
+        } catch (\Exception $e) {
+
+            return redirect()
+                ->back()
+                ->with('error', $e->getMessage());
+
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', __('Your profile has been created.'));
+    }
+
+
+
+    public function deleteProfile(Request $request)
+    {
+
+        try {
+            $this->profileService->deleteProfile($request->user());
+        } catch (ProfileNotFoundException $e) {
+
+            return redirect()
+                ->back()
+                ->with('error', $e->getMessage());
+
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', __('Profile deleted successfully.'));
+
     }
 }
